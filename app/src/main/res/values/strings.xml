@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Soda打车</string>
+
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">密码 (可选)</string>
+    <string name="action_sign_in">登录或注册</string>
+    <string name="action_sign_in_short">登录</string>
+    <string name="error_invalid_email">邮箱地址无效</string>
+    <string name="error_invalid_password">密码太短</string>
+    <string name="error_incorrect_password">密码不正确</string>
+    <string name="error_field_required">缺少密码或账号</string>
+    <string name="permission_rationale">登录需要借助邮箱完成</string>
+
+    <string-array name="car_type">
+        <item>出租车</item>
+        <item>快车</item>
+        <item>顺风车</item>
+        <item>专车</item>
+        <item>代驾</item>
+        <item>试驾</item>
+        <item>租车</item>
+    </string-array>
+
+    <string name="destination">你要去哪儿</string>
+    <string name="start">你从哪儿出发</string>
+</resources>
