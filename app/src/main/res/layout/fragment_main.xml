@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:orientation="vertical">
 
     <com.esri.android.map.MapView
         android:id="@+id/map"
@@ -10,28 +11,46 @@
         mapoptions.ZoomLevel="16"
         mapoptions.center="34.056215, -117.195668"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
-    <LinearLayout
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:orientation="vertical">
+        android:layout_margin="10dp"
+        app:cardBackgroundColor="@color/cardview_light_background"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="@dimen/cardview_default_elevation"
+        app:contentPadding="10dp">
 
-        <TextView
-            android:id="@+id/textview_main_start"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/start"
-            android:textSize="18sp" />
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textview_main_destination"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/destination"
-            android:textColorHint="@android:color/holo_orange_dark"
-            android:textSize="18sp" />
+            <TextView
+                android:id="@+id/textview_main_start"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:hint="@string/start"
+                android:textColor="@color/fontColorDark"
+                android:textSize="@dimen/textSize_tiny"/>
 
-    </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:textColor="@color/fontColorDark"/>
+
+            <TextView
+                android:id="@+id/textview_main_destination"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:hint="@string/destination"
+                android:textColorHint="@android:color/holo_orange_dark"
+                android:textSize="@dimen/textSize_tiny"/>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 </FrameLayout>

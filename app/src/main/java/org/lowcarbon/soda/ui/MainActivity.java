@@ -16,6 +16,7 @@ import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import org.lowcarbon.soda.R;
 import org.lowcarbon.soda.ui.fragment.MainFragment;
+import org.lowcarbon.soda.util.EventBusUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +43,7 @@ public class MainActivity extends RxAppCompatActivity {
 
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        EventBusUtil.register(this);
 
         initToolbar();
         initTabLayout();
@@ -51,13 +53,14 @@ public class MainActivity extends RxAppCompatActivity {
     @Override
     public void setSupportActionBar(@Nullable Toolbar toolbar) {
         super.setSupportActionBar(toolbar);
-        if(toolbar!=null) {
+        if (toolbar != null) {
             mBtnOpen = (ImageView) toolbar.findViewById(R.id.image_toolbar);
         }
     }
 
     @Override
     protected void onDestroy() {
+        EventBusUtil.unregister(this);
         mDrawerLayout.removeDrawerListener(mDrawerListener);
         super.onDestroy();
     }
@@ -93,7 +96,7 @@ public class MainActivity extends RxAppCompatActivity {
         mDrawerLayout.setDrawerShadow(R.drawable.shadow, GravityCompat.START);
         mDrawerLayout.addDrawerListener(mDrawerListener);
 
-        if(mBtnOpen!=null) {
+        if (mBtnOpen != null) {
             mBtnOpen.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -103,10 +106,10 @@ public class MainActivity extends RxAppCompatActivity {
         }
 
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container_main);
-        if(fragment==null) {
+        if (fragment == null) {
             fragment = new MainFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.container_main,fragment,"MainFragment");
+            ft.replace(R.id.container_main, fragment, "MainFragment");
             ft.commit();
         }
     }
