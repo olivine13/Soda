@@ -4,6 +4,7 @@
 package org.lowcarbon.soda;
 
 import android.app.Application;
+import android.util.Log;
 
 import org.lowcarbon.soda.util.BDLocationUtil;
 
@@ -14,6 +15,8 @@ import org.lowcarbon.soda.util.BDLocationUtil;
  */
 public class App extends Application {
 
+    private final static String TAG = App.class.getSimpleName();
+
     private static App sApp;
 
     public static App getInstance() {
@@ -22,6 +25,7 @@ public class App extends Application {
 
     @Override
     public void onCreate() {
+        Log.i(TAG,"onCreate");
         super.onCreate();
         sApp = this;
 
@@ -30,6 +34,7 @@ public class App extends Application {
 
     @Override
     public void onTerminate() {
+        Log.i(TAG,"onTerminate");
         super.onTerminate();
         BDLocationUtil.getInstance().unregister();
     }

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                                        xmlns:tools="http://schemas.android.com/tools"
-                                        android:id="@+id/drawerlayout_main"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        tools:context=".ui.MainActivity">
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawerlayout_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.MainActivity">
 
     <!--主布局-->
     <android.support.design.widget.CoordinatorLayout
@@ -34,10 +35,46 @@
                 app:tabMode="scrollable"/>
         </android.support.design.widget.AppBarLayout>
 
-        <FrameLayout
-            android:id="@+id/container_main"
+        <com.esri.android.map.MapView
+            android:id="@+id/map"
+            mapoptions.MapType="Streets"
+            mapoptions.ZoomLevel="16"
+            mapoptions.center="34.056215, -117.195668"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@color/cardview_light_background"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/textview_main_start"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:hint="@string/start"
+                android:textColor="@color/fontColorDark"
+                android:textSize="@dimen/textSize_tiny"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:textColor="@color/fontColorDark"/>
+
+            <TextView
+                android:id="@+id/textview_main_destination"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:hint="@string/destination"
+                android:textColorHint="@android:color/holo_orange_dark"
+                android:textSize="@dimen/textSize_tiny"/>
+        </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
 
     <!--侧滑菜单-->
