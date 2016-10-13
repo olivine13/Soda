@@ -102,6 +102,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.esri.arcgis.android/arcgis-android/10.2.8-1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.jakewharton.rxbinding/rxbinding/0.4.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.jakewharton/butterknife/8.2.1/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.sothree.slidinguppanel/library/3.3.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.trello/rxlifecycle-android/0.8.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.trello/rxlifecycle-components/0.8.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/io.reactivex/rxandroid/1.2.1/jars" />
@@ -121,6 +122,7 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="okio-1.8.0" level="project" />
     <orderEntry type="library" exported="" name="support-compat-24.2.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-24.2.0" level="project" />
     <orderEntry type="library" exported="" name="jsr305-3.0.1" level="project" />
@@ -136,6 +138,10 @@
     <orderEntry type="library" exported="" name="support-core-ui-24.2.0" level="project" />
     <orderEntry type="library" exported="" name="support-core-utils-24.2.0" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-24.2.0" level="project" />
+    <orderEntry type="library" exported="" name="adapter-rxjava-2.1.0" level="project" />
+    <orderEntry type="library" exported="" name="gson-2.7" level="project" />
+    <orderEntry type="library" exported="" name="retrofit-2.1.0" level="project" />
+    <orderEntry type="library" exported="" name="converter-gson-2.1.0" level="project" />
     <orderEntry type="library" exported="" name="arcgis-android-10.2.8-1" level="project" />
     <orderEntry type="library" exported="" name="rxjava-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="rxandroid-1.2.1" level="project" />
@@ -143,9 +149,11 @@
     <orderEntry type="library" exported="" name="cardview-v7-23.4.0" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-24.2.0" level="project" />
     <orderEntry type="library" exported="" name="support-vector-drawable-24.2.0" level="project" />
+    <orderEntry type="library" exported="" name="library-3.3.1" level="project" />
     <orderEntry type="library" exported="" name="butterknife-8.2.1" level="project" />
     <orderEntry type="library" exported="" name="rxbinding-0.4.0" level="project" />
     <orderEntry type="library" exported="" name="greendao-api-3.1.1" level="project" />
+    <orderEntry type="library" exported="" name="okhttp-3.3.0" level="project" />
     <orderEntry type="library" exported="" name="butterknife-annotations-8.2.1" level="project" />
     <orderEntry type="module" module-name="bdlocation" exported="" />
     <orderEntry type="library" exported="" name="BaiduLBS_Android" level="project" />

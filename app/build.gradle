@@ -23,8 +23,20 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    signingConfigs {
+        config {
+            storeFile file("../soda.jks")
+            storePassword "soda2016"
+            keyAlias "soda"
+            keyPassword "soda2016"
+        }
+    }
     buildTypes {
+        debug {
+            signingConfig signingConfigs.config
+        }
         release {
+            signingConfig signingConfigs.config
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -50,7 +62,7 @@ greendao {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(":bdlocation")
+    compile project(':bdlocation')
     apt 'com.jakewharton:butterknife-compiler:8.2.1'
     compile 'com.esri.arcgis.android:arcgis-android:10.2.8-1'
     compile 'com.jakewharton:butterknife:8.2.1'
@@ -64,4 +76,8 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'com.trello:rxlifecycle:0.8.0'
     compile 'com.trello:rxlifecycle-components:0.8.0'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+    compile 'com.sothree.slidinguppanel:library:3.3.1'
 }

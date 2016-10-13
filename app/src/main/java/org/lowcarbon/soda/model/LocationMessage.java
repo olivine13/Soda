@@ -14,4 +14,8 @@ public class LocationMessage {
     public LocationMessage(String content) {
         this.mContent = content;
     }
+
+    public String getContent() {
+        return this.mContent;
+    }
 }

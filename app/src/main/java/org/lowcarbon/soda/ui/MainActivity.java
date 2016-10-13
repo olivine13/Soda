@@ -16,7 +16,6 @@ import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import org.lowcarbon.soda.R;
 import org.lowcarbon.soda.ui.fragment.MainFragment;
-import org.lowcarbon.soda.util.EventBusUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,6 +24,8 @@ import butterknife.ButterKnife;
  * Created by laizhenqi on 2016/10/4.
  */
 public class MainActivity extends RxAppCompatActivity {
+
+    private final static String TAG = MainActivity.class.getSimpleName();
 
     @BindView(R.id.drawerlayout_main)
     DrawerLayout mDrawerLayout;
@@ -43,7 +44,6 @@ public class MainActivity extends RxAppCompatActivity {
 
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        EventBusUtil.register(this);
 
         initToolbar();
         initTabLayout();
@@ -60,7 +60,6 @@ public class MainActivity extends RxAppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        EventBusUtil.unregister(this);
         mDrawerLayout.removeDrawerListener(mDrawerListener);
         super.onDestroy();
     }
