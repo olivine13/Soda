@@ -6,7 +6,6 @@ package org.lowcarbon.soda.web;
 import org.lowcarbon.soda.model.RoadInfo;
 
 import java.util.Date;
-import java.util.List;
 
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -20,5 +19,5 @@ import rx.Observable;
 public interface ApiService {
 
     @GET("/roads")
-    Observable<List<RoadInfo>> getRoadInfos(@Query("date") Date date, @Query("start") String start, @Query("end") String end);
+    Observable<RoadInfo> getRoadInfos(@Query("date") Date date, @Query("start") String start, @Query("end") String end);
 }

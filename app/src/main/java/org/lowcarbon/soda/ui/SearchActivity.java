@@ -18,7 +18,7 @@ import android.widget.SearchView;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import org.lowcarbon.soda.R;
-import org.lowcarbon.soda.ui.dao.KeyWord;
+import org.lowcarbon.soda.dao.KeyWord;
 import org.lowcarbon.soda.util.KeyWordDBUtil;
 
 import java.util.List;

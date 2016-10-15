@@ -26,4 +26,6 @@
 
     <string name="destination">你要去哪儿</string>
     <string name="start">你从哪儿出发</string>
+
+    <string name="go">出发</string>
 </resources>

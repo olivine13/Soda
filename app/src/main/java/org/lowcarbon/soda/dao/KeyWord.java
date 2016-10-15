@@ -1,7 +1,7 @@
 /**
  * Copyright 2016 CVTE All Rights Reserved.
  */
-package org.lowcarbon.soda.ui.dao;
+package org.lowcarbon.soda.dao;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.NotNull;

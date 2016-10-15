@@ -4,9 +4,9 @@
 package org.lowcarbon.soda.util;
 
 import org.lowcarbon.soda.App;
-import org.lowcarbon.soda.ui.dao.DaoMaster;
-import org.lowcarbon.soda.ui.dao.KeyWord;
-import org.lowcarbon.soda.ui.dao.KeyWordDao;
+import org.lowcarbon.soda.dao.DaoMaster;
+import org.lowcarbon.soda.dao.KeyWord;
+import org.lowcarbon.soda.dao.KeyWordDao;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -15,8 +15,10 @@ public class RoadInfo {
 
     /**
      * rate : 78
-     * paths : [{"latitue":123,"lontitue":21},{"latitue":125,"lontitue":22}]
+     * paths : [{"name":"xx",latitue":123,"lontitue":21},{"name":"yy","latitue":125,"lontitue":22}]
      */
+
+    private String name;
 
     private int rate;
     /**
@@ -25,6 +27,14 @@ public class RoadInfo {
      */
 
     private List<PathsBean> paths;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public int getRate() {
         return rate;
@@ -43,8 +53,17 @@ public class RoadInfo {
     }
 
     public static class PathsBean {
+        private String name;
         private int latitue;
         private int lontitue;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
 
         public int getLatitue() {
             return latitue;

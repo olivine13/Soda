@@ -1,4 +1,4 @@
-package org.lowcarbon.soda.ui.dao;
+package org.lowcarbon.soda.dao;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;

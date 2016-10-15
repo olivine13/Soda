@@ -7,16 +7,22 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.esri.android.map.GraphicsLayer;
 import com.esri.android.map.MapView;
 import com.esri.android.map.ags.ArcGISFeatureLayer;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -24,11 +30,18 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 import org.lowcarbon.soda.R;
 import org.lowcarbon.soda.model.LocationMessage;
+import org.lowcarbon.soda.model.RoadInfo;
 import org.lowcarbon.soda.util.BDLocationUtil;
 import org.lowcarbon.soda.util.EventBusUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func2;
 
 /**
  * Created by laizhenqi on 2016/10/4.
@@ -42,6 +55,9 @@ public class MainActivity extends RxAppCompatActivity {
 
     @BindView(R.id.drawerlayout_main)
     DrawerLayout mDrawerLayout;
+
+    @BindView(R.id.lv_left_menu)
+    ListView mLeftMenu;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -62,7 +78,14 @@ public class MainActivity extends RxAppCompatActivity {
     @BindView(R.id.textview_main_destination)
     TextView mLabelDestination;
 
-    private String mFeatureServiceURL ;
+    @BindView(R.id.btn_go)
+    Button mBtnGo;
+
+    @BindView(R.id.recyclerview_road_list)
+    RecyclerView mRoadList;
+    RoadListAdapter mRoadAdapter;
+
+    private String mFeatureServiceURL;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,6 +106,7 @@ public class MainActivity extends RxAppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        //开始定位
         BDLocationUtil.getInstance().start();
     }
 
@@ -120,7 +144,6 @@ public class MainActivity extends RxAppCompatActivity {
         mDrawerLayout.removeDrawerListener(mDrawerListener);
         super.onDestroy();
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -192,6 +215,7 @@ public class MainActivity extends RxAppCompatActivity {
                 }
             });
         }
+        mLeftMenu.setAdapter(new ArrayAdapter<>(getBaseContext(), R.layout.item_road_list,R.id.road_name, new String[]{"个人信息", "设置"}));
 
         mMapView.enableWrapAround(true);
         mFeatureLayer = new ArcGISFeatureLayer(mFeatureServiceURL, ArcGISFeatureLayer.MODE.ONDEMAND);
@@ -216,6 +240,39 @@ public class MainActivity extends RxAppCompatActivity {
                 startActivityForResult(intent, REQUEST_SEARCH_DESTINATION);
             }
         });
+        mRoadList.setLayoutManager(new LinearLayoutManager(getBaseContext(), LinearLayoutManager.VERTICAL, false));
+        mRoadList.setAdapter(mRoadAdapter = new RoadListAdapter());
+        mRoadAdapter.setOnItemClickListener(new RoadListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Toast.makeText(getBaseContext(), "选中路段:" + mRoadAdapter.getItemAt(position).getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        Observable
+                .combineLatest(RxTextView.textChanges(mLabelStart), RxTextView.textChanges(mLabelDestination), new Func2<CharSequence, CharSequence, Boolean>() {
+                    @Override
+                    public Boolean call(CharSequence charSequence, CharSequence charSequence2) {
+                        return true;
+//                        return WebServiceHelper.getsInstance(getBaseContext()).getRoadInfos();
+                    }
+                })
+//                .delay(1000, TimeUnit.MILLISECONDS)
+                .compose(this.<Boolean>bindToLifecycle())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean ret) {
+                        if (ret) {
+                            mBtnGo.setVisibility(View.VISIBLE);
+                            List<RoadInfo> test = new ArrayList<>();
+                            for (int i = 0; i < 5; i++) {
+                                RoadInfo info = new RoadInfo();
+                                info.setName("测试" + (i + 1));
+                                test.add(info);
+                            }
+                            mRoadAdapter.refresh(test);
+                        }
+                    }
+                });
     }
 
     private DrawerLayout.DrawerListener mDrawerListener = new DrawerLayout.DrawerListener() {

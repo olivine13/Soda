@@ -15,7 +15,8 @@
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|snap">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -35,46 +36,69 @@
                 app:tabMode="scrollable"/>
         </android.support.design.widget.AppBarLayout>
 
-        <com.esri.android.map.MapView
-            android:id="@+id/map"
-            mapoptions.MapType="Streets"
-            mapoptions.ZoomLevel="16"
-            mapoptions.center="34.056215, -117.195668"
+        <com.sothree.slidinguppanel.SlidingUpPanelLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:umanoPanelHeight="100dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="@color/cardview_light_background"
-            android:orientation="vertical"
-            android:padding="10dp">
+            <com.esri.android.map.MapView
+                android:id="@+id/map"
+                mapoptions.MapType="Streets"
+                mapoptions.ZoomLevel="16"
+                mapoptions.center="34.056215, -117.195668"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
 
-            <TextView
-                android:id="@+id/textview_main_start"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:hint="@string/start"
-                android:textColor="@color/fontColorDark"
-                android:textSize="@dimen/textSize_tiny"/>
+                android:background="@color/cardview_light_background"
+                android:orientation="vertical"
+                android:padding="10dp">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray"
-                android:textColor="@color/fontColorDark"/>
+                <TextView
+                    android:id="@+id/textview_main_start"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center_vertical"
+                    android:hint="@string/start"
+                    android:textColor="@color/fontColorDark"
+                    android:textSize="@dimen/textSize_tiny"/>
 
-            <TextView
-                android:id="@+id/textview_main_destination"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:hint="@string/destination"
-                android:textColorHint="@android:color/holo_orange_dark"
-                android:textSize="@dimen/textSize_tiny"/>
-        </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"
+                    android:textColor="@color/fontColorDark"/>
+
+                <TextView
+                    android:id="@+id/textview_main_destination"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:hint="@string/destination"
+                    android:textColorHint="@android:color/holo_orange_dark"
+                    android:textSize="@dimen/textSize_tiny"/>
+
+                <Button
+                    android:id="@+id/btn_go"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/btn_orange_bg"
+                    android:text="@string/go"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerview_road_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </com.sothree.slidinguppanel.SlidingUpPanelLayout>
     </android.support.design.widget.CoordinatorLayout>
 
     <!--侧滑菜单-->
@@ -88,7 +112,6 @@
             android:id="@+id/lv_left_menu"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@null"
-            android:text="DrawerLayout"/>
+            android:divider="@null"/>
     </LinearLayout>
 </android.support.v4.widget.DrawerLayout>
