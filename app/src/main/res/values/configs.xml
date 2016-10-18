@@ -2,5 +2,6 @@
 <resources>
 
     <string name="reset_base_url"></string>
+    <string name="mapServiceURL">http://222.73.7.71/arcgis/rest/services/test/MapServer</string>
     <string name="featureServiceURL">http://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/World_Cities/FeatureServer/0</string>
 </resources>

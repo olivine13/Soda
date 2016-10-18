@@ -6,9 +6,13 @@ package org.lowcarbon.soda.web;
 import android.content.Context;
 
 import org.lowcarbon.soda.R;
+import org.lowcarbon.soda.model.CarInfo;
+import org.lowcarbon.soda.model.DriverInfo;
 import org.lowcarbon.soda.model.RoadInfo;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -42,7 +46,25 @@ public class WebServiceHelper implements ApiService {
 
     @Override
     public Observable<RoadInfo> getRoadInfos(@Query("date") Date date, @Query("start") String start, @Query("end") String end) {
-        return mApiService.getRoadInfos(date, start, end);
+        return null;
+    }
+
+    @Override
+    public Observable<List<CarInfo>> getCarInfos(@Query("lontitude") double lontitude, @Query("latitude") double latitude, @Query("num") int num) {
+        return Observable.just(Arrays.asList(CarInfo.getTest()));
+//        return mApiService.getCarInfos(lontitude, latitude, num);
+    }
+
+    @Override
+    public Observable<DriverInfo> getDriverInfo(@Query("id") String id) {
+        DriverInfo[] list = DriverInfo.getTest();
+        for (DriverInfo info : list) {
+            if (info.getId().equals(id)) {
+                return Observable.just(info);
+            }
+        }
+        return null;
+//        return mApiService.getDriverInfo(id);
     }
 
 }
