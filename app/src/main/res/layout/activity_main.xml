@@ -47,7 +47,7 @@
                 android:id="@+id/map"
                 mapoptions.MapType="Streets"
                 mapoptions.ZoomLevel="16"
-                mapoptions.center="34.056215, -117.195668"
+                mapoptions.center="121, 31"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
@@ -81,7 +81,7 @@
                     android:layout_marginTop="5dp"
                     android:gravity="center_vertical"
                     android:hint="@string/destination"
-                    android:textColorHint="@android:color/holo_orange_dark"
+                    android:textColor="@color/fontColorDark"
                     android:textSize="@dimen/textSize_tiny"/>
 
                 <Button

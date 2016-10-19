@@ -59,6 +59,15 @@ public class RoadListAdapter extends RecyclerView.Adapter<RoadListAdapter.ViewHo
         this.mOnItemClickListener = onItemClickListener;
     }
 
+    public void add(RoadInfo item) {
+        mData.add(item);
+    }
+
+    public void clear() {
+        mData.clear();
+        notifyDataSetChanged();
+    }
+
     public void refresh(List<RoadInfo> list) {
         mData.clear();
         mData.addAll(list);

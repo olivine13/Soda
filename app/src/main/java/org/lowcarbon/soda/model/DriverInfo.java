@@ -34,12 +34,12 @@ public class DriverInfo {
     public static DriverInfo[] getTest() {
         DriverInfo[] data = new DriverInfo[10];
         for (int i = 0; i < data.length; i++) {
-            data[i] = new DriverInfo(100, i + "师傅", "1390000000" + i, 10 - i, 0, "在线", 160, "" + i);
+            data[i] = new DriverInfo("" + i, 100, "师傅" + i, "1390000000" + i, 10 - i, 0, "在线", 160, "" + i);
         }
         return data;
     }
 
-    public DriverInfo(String id,int rate, String name, String phone, int rank, double change, String status, int onlinetime, String car) {
+    public DriverInfo(String id, int rate, String name, String phone, int rank, double change, String status, int onlinetime, String car) {
         this.id = id;
         this.rate = rate;
         this.name = name;

@@ -136,9 +136,19 @@ public class SearchActivity extends RxAppCompatActivity {
                     KeyWordDBUtil.getInstance().clearHisotySearchKeyWords();
                     mAdapter.clear();
                 } else if (type == SearchAdapter.TYPE_HISTORY) {
-                    mSearchView.setQuery(mAdapter.getItem(position).replace("history:", ""), false);
+                    String query = mAdapter.getItem(position).replace("history:", "");
+                    mSearchView.setQuery(query, false);
+                    Intent data = new Intent();
+                    data.setData(Uri.parse(query));
+                    setResult(RESULT_OK, data);
+                    finish();
                 } else if (type == SearchAdapter.TYPE_ASSOCIATE) {
-                    mSearchView.setQuery(mAdapter.getItem(position).replace("associate", ""), false);
+                    String query = mAdapter.getItem(position).replace("associate", "");
+                    mSearchView.setQuery(query, false);
+                    Intent data = new Intent();
+                    data.setData(Uri.parse(query));
+                    setResult(RESULT_OK, data);
+                    finish();
                 }
             }
         });
@@ -173,6 +183,10 @@ public class SearchActivity extends RxAppCompatActivity {
                         mAdapter.add("history:" + s);
                     }
                 });
+    }
+
+    public void onBack(View v) {
+        finish();
     }
 
 }

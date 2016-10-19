@@ -3,6 +3,7 @@
  */
 package org.lowcarbon.soda.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,10 +22,19 @@ public class RoadInfo {
     private String name;
 
     private int rate;
+
+    public RoadInfo(String name, int rate, List<PathsBean> paths) {
+        this.name = name;
+        this.rate = rate;
+        this.paths = paths;
+    }
+
     /**
      * latitue : 123
      * lontitue : 21
      */
+
+
 
     private List<PathsBean> paths;
 
@@ -50,6 +60,14 @@ public class RoadInfo {
 
     public void setPaths(List<PathsBean> paths) {
         this.paths = paths;
+    }
+
+    public static RoadInfo[] getTest(String start, String end) {
+        RoadInfo[] list = new RoadInfo[8];
+        for( int i = 0 ;i < list.length ; i++ ) {
+            list[i] = new RoadInfo(start+"-"+end+i,80+i,new ArrayList<PathsBean>());
+        }
+        return list;
     }
 
     public static class PathsBean {

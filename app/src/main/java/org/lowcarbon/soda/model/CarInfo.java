@@ -36,12 +36,13 @@ public class CarInfo {
     private boolean brake;
     private boolean elevated;
 
-    public static CarInfo[] getTest() {
-        CarInfo[] cars = new CarInfo[5];
+    public static CarInfo[] getTest(double lontitude, double latitude) {
+        CarInfo[] cars = new CarInfo[20];
         Random random = new Random();
         for (int i = 0; i < cars.length; i++) {
-            double rd = random.nextFloat() * cars.length;
-            cars[i] = new CarInfo("" + i, "" + i, "" + System.currentTimeMillis(), 120 + rd, 30 + rd, false, 30, 0, false, false);
+            double xr = random.nextDouble();
+            double yr = random.nextDouble();
+            cars[i] = new CarInfo("" + i, "" + i, "" + System.currentTimeMillis(), latitude - 0.1 + xr / 10, lontitude - 0.1 + yr / 10, false, 30, 0, false, false);
         }
         return cars;
     }

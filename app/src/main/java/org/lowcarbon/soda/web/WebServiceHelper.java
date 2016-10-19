@@ -11,7 +11,6 @@ import org.lowcarbon.soda.model.DriverInfo;
 import org.lowcarbon.soda.model.RoadInfo;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import retrofit2.Retrofit;
@@ -38,20 +37,21 @@ public class WebServiceHelper implements ApiService {
 
     public WebServiceHelper(Context context) {
         this.mApiService = new Retrofit.Builder()
-                .baseUrl(context.getResources().getString(R.string.reset_base_url))
+                .baseUrl(context.getResources().getString(R.string.rest_base_url))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build().create(ApiService.class);
     }
 
     @Override
-    public Observable<RoadInfo> getRoadInfos(@Query("date") Date date, @Query("start") String start, @Query("end") String end) {
-        return null;
+    public Observable<List<RoadInfo>> getRoadInfos( @Query("start") String start, @Query("end") String end) {
+        return Observable.just(Arrays.asList(RoadInfo.getTest(start,end)));
+//        return mApiService.getRoadInfos(start,end);
     }
 
     @Override
     public Observable<List<CarInfo>> getCarInfos(@Query("lontitude") double lontitude, @Query("latitude") double latitude, @Query("num") int num) {
-        return Observable.just(Arrays.asList(CarInfo.getTest()));
+        return Observable.just(Arrays.asList(CarInfo.getTest(lontitude,latitude)));
 //        return mApiService.getCarInfos(lontitude, latitude, num);
     }
 
