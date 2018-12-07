@@ -2,7 +2,7 @@
 <resources>
 
     <string name="rest_base_url">http://222.73.7.71</string>
-    <string name="imageServiceURL">/arcgis/rest/services/test/MapServer</string>
-    <string name="mapServiceURL">/arcgis/services/test/MapServer/WMSServer?SERVICE=WMS&amp;VERSION=1.3.0&amp;REQUEST=GetCapabilities</string>
+    <string name="imageServiceURL">/arcgis/rest/services/TianjinGIS/MapServer</string>
+    <string name="mapServiceURL">/arcgis/services/TianjinGIS/MapServer/WMSServer?SERVICE=WMS&amp;VERSION=1.3.0&amp;REQUEST=GetCapabilities</string>
     <string name="featureServiceURL">http://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/World_Cities/FeatureServer/0</string>
 </resources>

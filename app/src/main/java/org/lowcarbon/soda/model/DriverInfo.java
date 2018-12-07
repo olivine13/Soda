@@ -3,6 +3,18 @@
  */
 package org.lowcarbon.soda.model;
 
+import android.text.TextUtils;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import org.lowcarbon.soda.App;
+import org.lowcarbon.soda.util.AssetsUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @Description: TODO
  * @author: laizhenqi
@@ -11,35 +23,50 @@ package org.lowcarbon.soda.model;
 public class DriverInfo {
 
     /**
-     * rate : 87
-     * name : 李师傅
-     * phone : 13900000000
-     * rank : 23
-     * change : 0.01
-     * status : 在线
-     * onlinetime : 160
-     * car : 00001
+     * "car_id": "28524",
+     * "rate": "60.47",
+     * "rank": "51",
+     * "status": "在线",
+     * "onlinetime": "6.00"
      */
 
     private String id;
-    private int rate;
+    private double rate;
     private String name;
     private String phone;
     private int rank;
     private double change;
     private String status;
-    private int onlinetime;
+    private double onlinetime;
     private String car;
 
-    public static DriverInfo[] getTest() {
-        DriverInfo[] data = new DriverInfo[10];
-        for (int i = 0; i < data.length; i++) {
-            data[i] = new DriverInfo("" + i, 100, "师傅" + i, "1390000000" + i, 10 - i, 0, "在线", 160, "" + i);
+    private static List<DriverInfo> sDriverList;
+
+    public static List<DriverInfo> readLocal() {
+        if (sDriverList != null) {
+            return sDriverList;
         }
-        return data;
+        String result = AssetsUtils.readFromAssets(App.getInstance(), "driver_info.json");
+        JsonParser parser = new JsonParser();
+        JsonArray array = parser.parse(result).getAsJsonArray();
+        sDriverList = new ArrayList<>();
+        for (int i = 0; i < array.size(); i++) {
+            try {
+                JsonObject json = array.get(i).getAsJsonObject();
+                String id = json.get("car_id").getAsString();
+                double rate = Double.parseDouble(json.get("rate").getAsString());
+                int rank = Integer.parseInt(json.get("rank").getAsString());
+                String status = json.get("status").getAsString();
+                double online = Double.parseDouble(json.get("onlinetime").getAsString());
+                sDriverList.add(new DriverInfo(id, rate, null, null, rank, 0, status, online, id));
+            } catch (Exception ignore) {
+
+            }
+        }
+        return sDriverList;
     }
 
-    public DriverInfo(String id, int rate, String name, String phone, int rank, double change, String status, int onlinetime, String car) {
+    public DriverInfo(String id, double rate, String name, String phone, int rank, double change, String status, double onlinetime, String car) {
         this.id = id;
         this.rate = rate;
         this.name = name;
@@ -59,7 +86,7 @@ public class DriverInfo {
         this.id = id;
     }
 
-    public int getRate() {
+    public double getRate() {
         return rate;
     }
 
@@ -107,7 +134,7 @@ public class DriverInfo {
         this.status = status;
     }
 
-    public int getOnlinetime() {
+    public double getOnlinetime() {
         return onlinetime;
     }
 
