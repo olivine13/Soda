@@ -27,5 +27,8 @@ public interface ApiService {
     Observable<List<CarInfo>> getCarInfos(@Query("lontitude") double lontitude, @Query("latitude") double latitude, @Query("num") int num);
 
     @GET("/drivers")
+    Observable<List<DriverInfo>> getDriverInfos(@Query("num") int num);
+
+    @GET("/drivers")
     Observable<DriverInfo> getDriverInfo(@Query("id") String id);
 }

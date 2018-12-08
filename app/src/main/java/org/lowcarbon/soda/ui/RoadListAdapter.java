@@ -14,77 +14,46 @@ import org.lowcarbon.soda.model.RoadInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * @Description: TODO
  * @author: laizhenqi
  * @date: 2016/10/15
  */
-public class RoadListAdapter extends RecyclerView.Adapter<RoadListAdapter.ViewHolder> {
-
-
-    private final List<RoadInfo> mData = new ArrayList<>();
-
-    private OnItemClickListener mOnItemClickListener;
+public class RoadListAdapter extends BaseAdapter<RoadInfo, RoadListAdapter.ViewHolder> {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_road_list, parent, false));
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_road, parent, false));
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        RoadInfo info = mData.get(position);
+        RoadInfo info = getItemAt(position);
         holder.name.setText(info.getName());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mOnItemClickListener != null) {
-                    mOnItemClickListener.onItemClick(position);
-                }
-            }
-        });
-    }
-
-    public RoadInfo getItemAt(int position) {
-        return mData.get(position);
-    }
-
-    @Override
-    public int getItemCount() {
-        return mData.size();
-    }
-
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.mOnItemClickListener = onItemClickListener;
-    }
-
-    public void add(RoadInfo item) {
-        mData.add(item);
-    }
-
-    public void clear() {
-        mData.clear();
-        notifyDataSetChanged();
-    }
-
-    public void refresh(List<RoadInfo> list) {
-        mData.clear();
-        mData.addAll(list);
-        notifyDataSetChanged();
+        holder.time.setText(info.getDuration() + "分钟");
+        holder.distance.setText(info.getDistance() + "公里");
+        holder.rate.setText(String.format(Locale.getDefault(), "安全指数%d", info.getRate()));
     }
 
     final static class ViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.road_name)
         TextView name;
+        @BindView(R.id.road_time)
+        TextView time;
+        @BindView(R.id.road_distance)
+        TextView distance;
+        @BindView(R.id.road_rate)
+        TextView rate;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            name = (TextView) itemView.findViewById(R.id.road_name);
+            ButterKnife.bind(this, itemView);
         }
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(int position);
     }
 }

@@ -11,8 +11,11 @@ import org.lowcarbon.soda.model.CarInfo;
 import org.lowcarbon.soda.model.DriverInfo;
 import org.lowcarbon.soda.model.RoadInfo;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -53,7 +56,22 @@ public class WebServiceHelper implements ApiService {
     @Override
     public Observable<List<CarInfo>> getCarInfos(@Query("lontitude") double lontitude, @Query("latitude") double latitude, @Query("num") int num) {
         return Observable.just(CarInfo.readLocal(lontitude, latitude));
-//        return mApiService.getCarInfos(lontitude, latitude, num);
+    }
+
+    @Override
+    public Observable<List<DriverInfo>> getDriverInfos(int num) {
+        List<DriverInfo> list = DriverInfo.readLocal();
+        List<DriverInfo> result = new ArrayList<>();
+        Random rd = new Random();
+        while (num > 0) {
+            int n = rd.nextInt(list.size());
+            if (result.contains(list.get(n))) {
+                continue;
+            }
+            result.add(list.get(n));
+            num--;
+        }
+        return Observable.just(result);
     }
 
     @Override

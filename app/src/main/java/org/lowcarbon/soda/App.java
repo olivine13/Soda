@@ -6,7 +6,8 @@ package org.lowcarbon.soda;
 import android.app.Application;
 import android.util.Log;
 
-import org.lowcarbon.soda.util.BDLocationUtil;
+import com.baidu.mapapi.SDKInitializer;
+import com.baidu.mapapi.map.BaiduMap;
 
 /**
  * @Description: TODO
@@ -25,17 +26,16 @@ public class App extends Application {
 
     @Override
     public void onCreate() {
-        Log.i(TAG,"onCreate");
+        Log.i(TAG, "onCreate");
         super.onCreate();
         sApp = this;
 
-        BDLocationUtil.getInstance().register();
+        SDKInitializer.initialize(this);
     }
 
     @Override
     public void onTerminate() {
-        Log.i(TAG,"onTerminate");
+        Log.i(TAG, "onTerminate");
         super.onTerminate();
-        BDLocationUtil.getInstance().unregister();
     }
 }

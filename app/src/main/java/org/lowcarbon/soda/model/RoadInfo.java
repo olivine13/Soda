@@ -3,6 +3,8 @@
  */
 package org.lowcarbon.soda.model;
 
+import com.baidu.mapapi.overlayutil.DrivingRouteOverlay;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,20 @@ public class RoadInfo {
     private String name;
 
     private int rate;
+
+    private int duration;
+
+    private int distance;
+
+    private DrivingRouteOverlay overlay;
+
+    public RoadInfo(String name, int rate, int duration, int distance, DrivingRouteOverlay overlay) {
+        this.name = name;
+        this.rate = rate;
+        this.duration = duration;
+        this.distance = distance;
+        this.overlay = overlay;
+    }
 
     public RoadInfo(String name, int rate, List<PathsBean> paths) {
         this.name = name;
@@ -52,6 +68,30 @@ public class RoadInfo {
 
     public void setRate(int rate) {
         this.rate = rate;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
+    }
+
+    public DrivingRouteOverlay getOverlay() {
+        return overlay;
+    }
+
+    public void setOverlay(DrivingRouteOverlay overlay) {
+        this.overlay = overlay;
     }
 
     public List<PathsBean> getPaths() {

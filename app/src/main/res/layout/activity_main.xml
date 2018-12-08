@@ -42,11 +42,8 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:umanoPanelHeight="100dp">
 
-            <com.esri.android.map.MapView
+            <com.baidu.mapapi.map.MapView
                 android:id="@+id/map"
-                mapoptions.MapType="Streets"
-                mapoptions.ZoomLevel="16"
-                mapoptions.center="121, 31"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
@@ -56,6 +53,12 @@
                 android:background="@color/cardview_light_background"
                 android:orientation="vertical"
                 android:padding="10dp">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerView_road"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/textview_main_start"
@@ -93,9 +96,9 @@
                     android:text="@string/go" />
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recyclerview_road_list"
+                    android:id="@+id/recyclerView_driver"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="match_parent" />
             </LinearLayout>
         </com.sothree.slidinguppanel.SlidingUpPanelLayout>
     </android.support.design.widget.CoordinatorLayout>

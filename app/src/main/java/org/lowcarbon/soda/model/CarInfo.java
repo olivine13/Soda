@@ -5,17 +5,13 @@ package org.lowcarbon.soda.model;
 
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.lowcarbon.soda.App;
 import org.lowcarbon.soda.util.AssetsUtils;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -42,18 +38,26 @@ public class CarInfo {
     private String driver;
     private String gpstime;
     private double latitude;
-    private double lontitude;
+    private double longitude;
     private boolean empty;
     private int speed;
     private int direction;
     private boolean brake;
     private boolean elevated;
 
-    public static List<CarInfo> readLocal(double lontitude, double latitude) {
+    private static List<CarInfo> sCarInfos;
+
+    public static List<CarInfo> readLocal(double longitude, double latitude) {
+        if (sCarInfos != null) {
+            return sCarInfos;
+        }
+        if (latitude == 0 || longitude == 0) {
+            return null;
+        }
         String result = AssetsUtils.readFromAssets(App.getInstance(), "car_info.json");
         JsonParser parser = new JsonParser();
         JsonArray array = parser.parse(result).getAsJsonArray();
-        List<CarInfo> list = new ArrayList<>();
+        sCarInfos = new ArrayList<>();
 
         Random random = new Random();
         for (int i = 0; i < array.size(); i++) {
@@ -63,25 +67,25 @@ public class CarInfo {
                 String time = json.get("timestamp").getAsString();
                 double xr = random.nextDouble();
                 double yr = random.nextDouble();
-                double lon = lontitude - 0.1 + yr / 10;
+                double lon = longitude - 0.1 + yr / 10;
                 double lat = latitude - 0.1 + xr / 10;
                 boolean empty = TextUtils.equals(json.get("empty").getAsString(), "1");
                 int speed = Integer.parseInt(json.get("speed").getAsString());
                 int direction = Integer.parseInt(json.get("direction").getAsString());
-                list.add(new CarInfo(id, id, time, lat, lon, empty, speed, direction, false, false));
+                sCarInfos.add(new CarInfo(id, id, time, lat, lon, empty, speed, direction, false, false));
             } catch (Exception ignore) {
 
             }
         }
-        return list;
+        return sCarInfos;
     }
 
-    public CarInfo(String id, String driver, String gpstime, double latitude, double lontitude, boolean empty, int speed, int direction, boolean brake, boolean elevated) {
+    public CarInfo(String id, String driver, String gpstime, double latitude, double longitude, boolean empty, int speed, int direction, boolean brake, boolean elevated) {
         this.id = id;
         this.driver = driver;
         this.gpstime = gpstime;
         this.latitude = latitude;
-        this.lontitude = lontitude;
+        this.longitude = longitude;
         this.empty = empty;
         this.speed = speed;
         this.direction = direction;
@@ -121,12 +125,12 @@ public class CarInfo {
         this.latitude = latitude;
     }
 
-    public double getLontitude() {
-        return lontitude;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public void setLontitude(double lontitude) {
-        this.lontitude = lontitude;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public boolean isEmpty() {

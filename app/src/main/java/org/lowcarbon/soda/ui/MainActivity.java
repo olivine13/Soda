@@ -1,15 +1,16 @@
 package org.lowcarbon.soda.ui;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -17,10 +18,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.util.SparseArray;
-import android.util.SparseIntArray;
-import android.view.InputDevice;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -29,45 +26,40 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.esri.android.map.GraphicsLayer;
-import com.esri.android.map.MapOptions;
-import com.esri.android.map.MapView;
-import com.esri.android.map.ags.ArcGISDynamicMapServiceLayer;
-import com.esri.android.map.event.OnStatusChangedListener;
-import com.esri.core.geometry.Point;
-import com.esri.core.map.Graphic;
-import com.esri.core.symbol.MarkerSymbol;
-import com.esri.core.symbol.PictureMarkerSymbol;
-import com.esri.core.symbol.SimpleMarkerSymbol;
-import com.jakewharton.rxbinding.widget.RxTextView;
+import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
+import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.overlayutil.DrivingRouteOverlay;
+import com.baidu.mapapi.search.route.BikingRouteResult;
+import com.baidu.mapapi.search.route.DrivingRouteLine;
+import com.baidu.mapapi.search.route.DrivingRoutePlanOption;
+import com.baidu.mapapi.search.route.DrivingRouteResult;
+import com.baidu.mapapi.search.route.IndoorRouteResult;
+import com.baidu.mapapi.search.route.MassTransitRouteResult;
+import com.baidu.mapapi.search.route.OnGetRoutePlanResultListener;
+import com.baidu.mapapi.search.route.PlanNode;
+import com.baidu.mapapi.search.route.RoutePlanSearch;
+import com.baidu.mapapi.search.route.TransitRouteResult;
+import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONObject;
-import org.lowcarbon.soda.BuildConfig;
 import org.lowcarbon.soda.R;
 import org.lowcarbon.soda.model.CarInfo;
 import org.lowcarbon.soda.model.DriverInfo;
-import org.lowcarbon.soda.model.LocationMessage;
 import org.lowcarbon.soda.model.RoadInfo;
-import org.lowcarbon.soda.util.ArcGISUtils;
-import org.lowcarbon.soda.util.BDLocationUtil;
-import org.lowcarbon.soda.util.EventBusUtil;
 import org.lowcarbon.soda.web.WebServiceHelper;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
@@ -76,11 +68,13 @@ import rx.schedulers.Schedulers;
 public class MainActivity extends RxAppCompatActivity {
 
     private final static String TAG = MainActivity.class.getSimpleName();
+    private static final double LATITUDE = 39.18;
+    private static final double LONGITUDE = 117.24;
 
     private final static int REQUEST_SEARCH_START = 0x0a;
     private final static int REQUEST_SEARCH_DESTINATION = 0x0b;
 
-    private static BitmapDrawable sCarDrawable;
+    private static Bitmap sCarBitmap;
 
     @BindView(R.id.drawerlayout_main)
     DrawerLayout mDrawerLayout;
@@ -98,8 +92,7 @@ public class MainActivity extends RxAppCompatActivity {
 
     @BindView(R.id.map)
     MapView mMapView;
-    ArcGISDynamicMapServiceLayer mImageLayer;
-    GraphicsLayer mGraphicLayer;
+    BaiduMap mBaiduMap;
 
     @BindView(R.id.textview_main_start)
     TextView mLabelStart;
@@ -110,9 +103,13 @@ public class MainActivity extends RxAppCompatActivity {
     @BindView(R.id.btn_go)
     Button mBtnGo;
 
-    @BindView(R.id.recyclerview_road_list)
+    @BindView(R.id.recyclerView_driver)
+    RecyclerView mDriverList;
+    DriverAdapter mDriverAdapter;
+
+    @BindView(R.id.recyclerView_road)
     RecyclerView mRoadList;
-    RoadListAdapter mRoadAdapter;
+    RoadListAdapter mRoadListAdapter;
 
     private String mImageServiceURL;
 
@@ -126,36 +123,21 @@ public class MainActivity extends RxAppCompatActivity {
 
         mImageServiceURL = getString(R.string.rest_base_url) + getString(R.string.imageServiceURL);
 
-        EventBusUtil.register(this);
-
         initToolbar();
         initTabLayout();
         initView();
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        //开始定位
-        BDLocationUtil.getInstance().start();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        mMapView.unpause();
+        mMapView.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mMapView.pause();
-    }
-
-    @Override
-    protected void onStop() {
-        BDLocationUtil.getInstance().stop();
-        super.onStop();
+        mMapView.onPause();
     }
 
     @Override
@@ -170,9 +152,12 @@ public class MainActivity extends RxAppCompatActivity {
     @Override
     protected void onDestroy() {
         Log.i(TAG, "onDestroy");
-        EventBusUtil.unregister(this);
         mDrawerLayout.removeDrawerListener(mDrawerListener);
         super.onDestroy();
+        mMapView.onDestroy();
+        if (mSearch != null) {
+            mSearch.destroy();
+        }
     }
 
     @Override
@@ -190,62 +175,6 @@ public class MainActivity extends RxAppCompatActivity {
                     break;
             }
         }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onBDLocationReceived(LocationMessage message) {
-        Log.i(TAG, message.getContent());
-        try {
-            JSONObject json = new JSONObject(message.getContent());
-            double latitude = json.getDouble("latitude");
-            double lontitude = json.getDouble("lontitude");
-//            测试阶段恒定0,30位置
-//            if (BuildConfig.DEBUG) {
-            latitude = 39.18;
-            lontitude = 117.24;
-//            }
-            mMapView.setMapOptions(new MapOptions(MapOptions.MapType.STREETS, latitude, lontitude, 12));
-
-            //查询当前位置附近的汽车数量
-            WebServiceHelper.getsInstance(getBaseContext())
-                    .getCarInfos(lontitude, latitude, 20)
-                    .doOnSubscribe(new Action0() {
-                        @Override
-                        public void call() {
-                            //清楚地图上的兴趣点
-                            mGraphicLayer.removeAll();
-                        }
-                    })
-                    .flatMap(new Func1<List<CarInfo>, Observable<CarInfo>>() {
-                        @Override
-                        public Observable<CarInfo> call(List<CarInfo> carInfos) {
-                            return Observable.from(carInfos);
-                        }
-                    })
-                    .flatMap(new Func1<CarInfo, Observable<DriverInfo>>() {
-                        @Override
-                        public Observable<DriverInfo> call(CarInfo carInfo) {
-                            Log.d(TAG, "纬度:" + carInfo.getLatitude() + " 经度:" + carInfo.getLontitude());
-                            //绘制mark点
-                            if (sCarDrawable == null) {
-                                sCarDrawable = new BitmapDrawable(BitmapFactory.decodeResource(getResources(), R.drawable.car));
-                            }
-                            MarkerSymbol marker = new PictureMarkerSymbol(sCarDrawable);
-                            Point point = new Point(carInfo.getLontitude(), carInfo.getLatitude());
-                            Graphic pointGraphic = new Graphic(ArcGISUtils.wgs2geometry(point, mMapView), marker);
-                            mGraphicLayer.addGraphic(pointGraphic);
-
-                            return WebServiceHelper.getsInstance(getBaseContext()).getDriverInfo(carInfo.getDriver())
-                                    .subscribeOn(Schedulers.newThread());
-                        }
-                    })
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe();
-        } catch (Exception e) {
-            Log.e(TAG, "json error", e);
-        }
-        BDLocationUtil.getInstance().stop();
     }
 
     private void initToolbar() {
@@ -287,46 +216,11 @@ public class MainActivity extends RxAppCompatActivity {
                 }
             });
         }
-        mLeftMenu.setAdapter(new ArrayAdapter<>(getBaseContext(), R.layout.item_road_list, R.id.road_name, new String[]{"个人信息", "设置"}));
+        mLeftMenu.setAdapter(new ArrayAdapter<>(getBaseContext(), R.layout.item_road, R.id.road_name, new String[]{"个人信息", "设置"}));
 
-        mMapView.setOnStatusChangedListener(new OnStatusChangedListener() {
-            @Override
-            public void onStatusChanged(Object o, STATUS status) {
-                Log.d(TAG, o.toString() + " status:" + status.name() + " error:" + status.getError());
-            }
-        });
-
-        mImageLayer = new ArcGISDynamicMapServiceLayer(mImageServiceURL);
-        mMapView.addLayer(mImageLayer);
-
-        //加载mark图层
-        mGraphicLayer = new GraphicsLayer();
-        mMapView.addLayer(mGraphicLayer);
-
-        //加载快速路图层的Url
-        mMapView.enableWrapAround(true);
-
-        mMapView.setOnGenericMotionListener(new View.OnGenericMotionListener() {
-            @Override
-            public boolean onGenericMotion(View v, MotionEvent event) {
-                if (0 != (event.getSource() & InputDevice.SOURCE_CLASS_POINTER)) {
-                    switch (event.getAction()) {
-                        // process the scroll wheel movement...处理滚轮事件
-                        case MotionEvent.ACTION_SCROLL:
-                            //获得垂直坐标上的滚动方向,也就是滚轮向下滚
-                            if (event.getAxisValue(MotionEvent.AXIS_VSCROLL) < 0.0f) {
-                                mMapView.zoomout();
-                            }
-                            //获得垂直坐标上的滚动方向,也就是滚轮向上滚
-                            else {
-                                mMapView.zoomin();
-                            }
-                            return true;
-                    }
-                }
-                return false;
-            }
-        });
+        mBaiduMap = mMapView.getMap();
+        mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(new LatLng(LATITUDE, LONGITUDE)));
+        mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
         mLabelStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -344,12 +238,25 @@ public class MainActivity extends RxAppCompatActivity {
                 startActivityForResult(intent, REQUEST_SEARCH_DESTINATION);
             }
         });
-        mRoadList.setLayoutManager(new LinearLayoutManager(getBaseContext(), LinearLayoutManager.VERTICAL, false));
-        mRoadList.setAdapter(mRoadAdapter = new RoadListAdapter());
-        mRoadAdapter.setOnItemClickListener(new RoadListAdapter.OnItemClickListener() {
+        mRoadList.setLayoutManager(new GridLayoutManager(getBaseContext(), 3));
+        mRoadList.setAdapter(mRoadListAdapter = new RoadListAdapter() {
             @Override
-            public void onItemClick(int position) {
-                Toast.makeText(getBaseContext(), "选中路段:" + mRoadAdapter.getItemAt(position).getName(), Toast.LENGTH_SHORT).show();
+            public void onBindViewHolder(ViewHolder holder, int position) {
+                super.onBindViewHolder(holder, position);
+
+            }
+        });
+        mDriverList.setLayoutManager(new LinearLayoutManager(getBaseContext(), LinearLayoutManager.VERTICAL, false));
+        mDriverList.setAdapter(mDriverAdapter = new DriverAdapter() {
+            @Override
+            public void onBindViewHolder(ViewHolder holder, int position) {
+                super.onBindViewHolder(holder, position);
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startSearchRoadInfo(mLabelStart.getText().toString(), mLabelDestination.getText().toString());
+                    }
+                });
             }
         });
         mLabelStart.addTextChangedListener(new TextWatcher() {
@@ -360,7 +267,9 @@ public class MainActivity extends RxAppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                startSearchRoadInfo(charSequence, mLabelDestination.getText());
+                if (!TextUtils.isEmpty(mLabelStart.getText()) && !TextUtils.isEmpty(mLabelDestination.getText())) {
+                    startSearchDriver();
+                }
             }
 
             @Override
@@ -376,7 +285,9 @@ public class MainActivity extends RxAppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                startSearchRoadInfo(mLabelStart.getText(), charSequence);
+                if (!TextUtils.isEmpty(mLabelStart.getText()) && !TextUtils.isEmpty(mLabelDestination.getText())) {
+                    startSearchDriver();
+                }
             }
 
             @Override
@@ -391,55 +302,132 @@ public class MainActivity extends RxAppCompatActivity {
                 Toast.makeText(getBaseContext(), "即将开始为您导航", Toast.LENGTH_SHORT).show();
             }
         });
-    }
 
-    private void startSearchRoadInfo(CharSequence charSequence, CharSequence charSequence2) {
-        String roadCombine;
-        if (!TextUtils.isEmpty(charSequence) && !TextUtils.isEmpty(charSequence2)) {
-            roadCombine = charSequence + "&" + charSequence2;
-        } else {
-            mBtnGo.setVisibility(View.GONE);
-            mRoadAdapter.clear();
-            return;
-        }
-        Observable.just(roadCombine)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(this.<String>bindToLifecycle())
-                .flatMap(new Func1<String, Observable<List<RoadInfo>>>() {
+        mBaiduMap.clear();
+        //查询当前位置附近的汽车数量
+        WebServiceHelper.getsInstance(getBaseContext())
+                .getCarInfos(LONGITUDE, LATITUDE, 20)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<CarInfo>>() {
                     @Override
-                    public Observable<List<RoadInfo>> call(String ret) {
-                        if (ret != null) {
-                            String[] split = ret.split("&");
-                            return WebServiceHelper.getsInstance(getBaseContext()).getRoadInfos(split[0], split[1]);
-                        } else
-                            return null;
-                    }
-                }).subscribeOn(Schedulers.newThread())
-                .flatMap(new Func1<List<RoadInfo>, Observable<RoadInfo>>() {
-                    @Override
-                    public Observable<RoadInfo> call(List<RoadInfo> roadInfos) {
-                        return Observable.from(roadInfos);
-                    }
-                })
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        mRoadAdapter.clear();
-                    }
-                })
-                .doOnCompleted(new Action0() {
-                    @Override
-                    public void call() {
-                        mRoadAdapter.notifyDataSetChanged();
-                    }
-                })
-                .subscribe(new Action1<RoadInfo>() {
-                    @Override
-                    public void call(RoadInfo roadInfo) {
-                        mBtnGo.setVisibility(View.VISIBLE);
-                        mRoadAdapter.add(roadInfo);
+                    public void call(List<CarInfo> carInfos) {
+                        if (sCarBitmap == null) {
+                            sCarBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.car);
+                        }
+                        List<OverlayOptions> options = new ArrayList<>();
+                        for (CarInfo carInfo : carInfos) {
+                            OverlayOptions opt = new MarkerOptions()
+                                    .position(new LatLng(carInfo.getLatitude(), carInfo.getLongitude()))
+                                    .icon(BitmapDescriptorFactory.fromBitmap(sCarBitmap));
+                            options.add(opt);
+                        }
+                        mBaiduMap.addOverlays(options);
                     }
                 });
+    }
+
+    private void startSearchDriver() {
+        // 随机展示5个司机信息，按安全指数排序
+        mRoadList.setVisibility(View.GONE);
+        mDriverAdapter.clearData();
+        mBaiduMap.clear();
+        WebServiceHelper.getsInstance(this)
+                .getDriverInfos(5)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<DriverInfo>>() {
+                    @Override
+                    public void call(List<DriverInfo> driverInfos) {
+                        mDriverAdapter.setData(driverInfos);
+                        if (sCarBitmap == null) {
+                            sCarBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.car);
+                        }
+                        List<OverlayOptions> options = new ArrayList<>();
+                        for (DriverInfo d : driverInfos) {
+                            CarInfo carInfo = d.getCar();
+                            if (carInfo == null) continue;
+                            OverlayOptions opt = new MarkerOptions()
+                                    .position(new LatLng(carInfo.getLatitude(), carInfo.getLongitude()))
+                                    .icon(BitmapDescriptorFactory.fromBitmap(sCarBitmap));
+                            options.add(opt);
+                        }
+                        mBaiduMap.addOverlays(options);
+                        mBtnGo.setVisibility(View.VISIBLE);
+                    }
+                });
+    }
+
+    private Dialog mWaitingDialog;
+    private RoutePlanSearch mSearch;
+
+    private void startSearchRoadInfo(final String st, final String dst) {
+        if (mWaitingDialog == null) {
+            mWaitingDialog = new CommonDialog.Builder(this).message("正在查询路线请稍后...").build();
+        }
+        mWaitingDialog.setCancelable(false);
+        if (!mWaitingDialog.isShowing()) {
+            mWaitingDialog.show();
+        }
+        if (mSearch == null) {
+            mSearch = RoutePlanSearch.newInstance();
+            mSearch.setOnGetRoutePlanResultListener(new OnGetRoutePlanResultListener() {
+                @Override
+                public void onGetWalkingRouteResult(WalkingRouteResult walkingRouteResult) {
+
+                }
+
+                @Override
+                public void onGetTransitRouteResult(TransitRouteResult transitRouteResult) {
+
+                }
+
+                @Override
+                public void onGetMassTransitRouteResult(MassTransitRouteResult massTransitRouteResult) {
+
+                }
+
+                @Override
+                public void onGetDrivingRouteResult(DrivingRouteResult drivingRouteResult) {
+                    List<DrivingRouteLine> result = drivingRouteResult.getRouteLines();
+                    if (result != null) {
+                        List<RoadInfo> list = new ArrayList<>();
+                        int i = 0;
+                        int[] rate = new int[]{94, 74, 56};
+                        for (DrivingRouteLine line : result) {
+                            if (i >= 3) {
+                                break;
+                            }
+                            DrivingRouteOverlay overlay = new DrivingRouteOverlay(mBaiduMap);
+                            overlay.setData(line);
+                            overlay.addToMap();
+                            overlay.zoomToSpan();
+                            overlay.setFocus(false);
+                            list.add(new RoadInfo("路线" + i + 1, rate[i], line.getDuration(), line.getDistance(), overlay));
+                            i++;
+                        }
+                        if (!list.isEmpty()) {
+                            mRoadList.setVisibility(View.VISIBLE);
+                            mRoadListAdapter.setData(list);
+                        }
+                    }
+                    mWaitingDialog.dismiss();
+                }
+
+                @Override
+                public void onGetIndoorRouteResult(IndoorRouteResult indoorRouteResult) {
+
+                }
+
+                @Override
+                public void onGetBikingRouteResult(BikingRouteResult bikingRouteResult) {
+
+                }
+            });
+        }
+        PlanNode stNode = PlanNode.withCityNameAndPlaceName("天津", st);
+        PlanNode dstNode = PlanNode.withCityNameAndPlaceName("天津", dst);
+        mSearch.drivingSearch(new DrivingRoutePlanOption().from(stNode).to(dstNode));
     }
 
     private DrawerLayout.DrawerListener mDrawerListener = new DrawerLayout.DrawerListener() {

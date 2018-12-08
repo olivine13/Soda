@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:gravity="center"
-              android:orientation="horizontal"
-              android:paddingBottom="5dp"
-              android:paddingTop="5dp">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingBottom="5dp"
+    android:paddingTop="5dp">
 
     <ImageView
         android:id="@+id/icon_search_list_item"
@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:tint="#aaaaaa"/>
+        android:tint="#aaaaaa" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,13 +25,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/textSize_normal"/>
+            android:textSize="@dimen/textSize_normal" />
 
         <TextView
             android:id="@+id/textview_search_list_item_sub"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@android:color/darker_gray"
-            android:textSize="@dimen/textSize_tiny"/>
+            android:textSize="@dimen/textSize_tiny" />
     </LinearLayout>
 </LinearLayout>
