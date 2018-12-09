@@ -168,7 +168,7 @@ public class DrivingRouteOverlay extends OverlayManager {
      * @return 线颜色
      */
     public int getLineColor() {
-        return focus ? 0 : 0x55000000;
+        return focus ? 0 : 0x33000000;
     }
     public List<BitmapDescriptor> getCustomTextureList() {
         ArrayList<BitmapDescriptor> list = new ArrayList<BitmapDescriptor>();

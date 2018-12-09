@@ -55,9 +55,11 @@ import org.lowcarbon.soda.web.WebServiceHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -241,9 +243,15 @@ public class MainActivity extends RxAppCompatActivity {
         mRoadList.setLayoutManager(new GridLayoutManager(getBaseContext(), 3));
         mRoadList.setAdapter(mRoadListAdapter = new RoadListAdapter() {
             @Override
-            public void onBindViewHolder(ViewHolder holder, int position) {
+            public void onBindViewHolder(ViewHolder holder, final int position) {
                 super.onBindViewHolder(holder, position);
-
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        select(position);
+                        notifyDataSetChanged();
+                    }
+                });
             }
         });
         mDriverList.setLayoutManager(new LinearLayoutManager(getBaseContext(), LinearLayoutManager.VERTICAL, false));
@@ -300,6 +308,15 @@ public class MainActivity extends RxAppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getBaseContext(), "即将开始为您导航", Toast.LENGTH_SHORT).show();
+                Observable.timer(5, TimeUnit.SECONDS)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<Long>() {
+                                       @Override
+                                       public void call(Long aLong) {
+                                           new CommonDialog.Builder(MainActivity.this).message("司机已偏移路线").build().show();
+                                       }
+                                   }
+                        );
             }
         });
 
@@ -403,7 +420,7 @@ public class MainActivity extends RxAppCompatActivity {
                             overlay.addToMap();
                             overlay.zoomToSpan();
                             overlay.setFocus(false);
-                            list.add(new RoadInfo("路线" + i + 1, rate[i], line.getDuration(), line.getDistance(), overlay));
+                            list.add(new RoadInfo("路线" + (i + 1), rate[i], line.getDuration(), line.getDistance(), overlay));
                             i++;
                         }
                         if (!list.isEmpty()) {
