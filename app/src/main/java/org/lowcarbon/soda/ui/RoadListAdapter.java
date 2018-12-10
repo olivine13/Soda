@@ -63,7 +63,7 @@ public class RoadListAdapter extends BaseAdapter<RoadInfo, RoadListAdapter.ViewH
         } else {
             holder.itemView.setBackgroundColor(Color.TRANSPARENT);
             info.getOverlay().setFocus(false);
-            info.getOverlay().addToMap();
+            info.getOverlay().removeFromMap();
         }
     }
 

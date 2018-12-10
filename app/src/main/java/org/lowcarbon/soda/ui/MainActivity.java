@@ -313,7 +313,7 @@ public class MainActivity extends RxAppCompatActivity {
                         .subscribe(new Action1<Long>() {
                                        @Override
                                        public void call(Long aLong) {
-                                           new CommonDialog.Builder(MainActivity.this).message("司机已偏移路线").build().show();
+                                           new CommonDialog.Builder(MainActivity.this).message("司机已累计偏离原路径2公里\n请问您是否投诉").showSelection(true).build().show();
                                        }
                                    }
                         );
@@ -380,7 +380,7 @@ public class MainActivity extends RxAppCompatActivity {
 
     private void startSearchRoadInfo(final String st, final String dst) {
         if (mWaitingDialog == null) {
-            mWaitingDialog = new CommonDialog.Builder(this).message("正在查询路线请稍后...").build();
+            mWaitingDialog = new CommonDialog.Builder(this).message("正在查询路线请稍后...").showSelection(false).build();
         }
         mWaitingDialog.setCancelable(false);
         if (!mWaitingDialog.isShowing()) {
@@ -417,9 +417,7 @@ public class MainActivity extends RxAppCompatActivity {
                             }
                             DrivingRouteOverlay overlay = new DrivingRouteOverlay(mBaiduMap);
                             overlay.setData(line);
-                            overlay.addToMap();
                             overlay.zoomToSpan();
-                            overlay.setFocus(false);
                             list.add(new RoadInfo("路线" + (i + 1), rate[i], line.getDuration(), line.getDistance(), overlay));
                             i++;
                         }
